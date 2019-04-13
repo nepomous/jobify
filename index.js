@@ -11,9 +11,17 @@ const dbConnection = sqlite.open(path.resolve(__dirname, 'banco.sqlite'), {Promi
 
 const port = process.env.PORT || 3000
 
+app.use('/admin',(req, res, next) => {
+    if(req.hostname === 'localhost'){
+        next() //a instância de admin só funciona em ambiente de dev, quando subo pro Now, não funfa
+    }else{
+        res.send('not allowed')
+    }
+})
+
 app.set('views', path.join(__dirname,'views'))
 app.set('view engine', 'ejs') 
-app.use(express.static('public'))
+app.use(express.static(path.join(__dirname,'public')))
 app.use(bodyParser.urlencoded({extended: true}))
 
 app.get('/', async(request,response) => {
